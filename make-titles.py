@@ -17,6 +17,9 @@ btw Version 2.0 will be able to take srt files and make an importable sequence!
 '''
 import re
 
+# this is useful for RTL languages like hebrew, turn this to False for english.
+REVERSE_TEXT = True
+
 TEMPLATE = open("TitleExample.prtl").read()
 TEMPLATE = TEMPLATE.decode('utf-16')
 # this file should be unix format (only \n, not \r\n, because I split on \n\n)
@@ -27,11 +30,16 @@ SECOND_LINE_TO_REPLACE = u'SecondLine'
 def MakePrtlFile(textlines, fname):
     # premiere does newlines in a very strange fashion... So i just remove theme
     lines = textlines.strip().split('\n')
-    firstLine = lines[0][::-1]
+    firstLine = lines[0]
     if len(lines) > 1:
-        secondLine = lines[1][::-1]
+        secondLine = lines[1]
     else:
         secondLine = u''
+        
+    if REVERSE_TEXT:
+        secondLine = secondLine[::-1]
+        firstLine = firstLine[::-1]
+        
     print fname
     print repr(firstLine)
     print repr(secondLine)
