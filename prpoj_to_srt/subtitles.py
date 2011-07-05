@@ -17,7 +17,7 @@ def time_format(seconds, msec_sep='.'):
     '''
     Converts an amount of seconds into
         Hours:Minutes:Seconds.milliseconds
-    and the milliseconds and have whatever separator you like. You crazy you.
+    and the milliseconds can have whatever separator you like. You crazy you.
     '''
     delta = datetime.timedelta(seconds=seconds)
     milliseconds = int(delta.microseconds / 1000)
