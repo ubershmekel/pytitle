@@ -95,14 +95,64 @@ def parse_titles(prproj):
     text = pprint.pformat(TITLES)
     open('detected_titles.txt', 'wb').write(text.encode('utf-8'))
 
-
 def fix_hebrew(line):
+    start = 0
+    i = 0
+    new_line_parts = []
+    is_hebrew_part = False
+    for i, c in enumerate(line):
+        if c in 'אבגדהוזחטיכלמנסעפצקרשתםףץןך':
+            if is_hebrew_part:
+                continue
+            else:
+                is_hebrew_part = True
+                new_line_parts.append(line[start:i])
+                start = i
+            continue
+        elif c in string.ascii_letters:
+            if is_hebrew_part:
+                new_line_parts.append(line[start:i][::-1])
+                start = i
+            else:
+                continue
+    i += 1
+    if is_hebrew_part:
+        new_line_parts.append(line[start:i][::-1])
+    else:
+        new_line_parts.append(line[start:i])
+    
+    return ''.join(new_line_parts)
+
+def fix_hebrew_c(line):
+    words_list = []
+    for word in re.split(r'([א-ת ,.:?!]+)', line):
+        if len(word) == 0:
+            continue
+        
+        if word[0] in 'אבגדהוזחטיכלמנסעפצקרשתםףץןך ,.:?!':
+            words_list.append(word[::-1])
+        else:
+            words_list.append(word)
+            
+    line = ''.join(words_list)
+    
+    # fix punctuation from the outer edges (bring from the end to the start)
+    puncs = r''',."'?!: '''
+    ending_puncs = re.findall(r'([%s]+)$' % re.escape(puncs), line)
+    if len(ending_puncs) > 0:
+        line = ending_puncs[0] + line.rstrip(ending_puncs[0])
+    
+    return line
+
+def fix_hebrew_b(line):
+    original_line = line
+    
     # reverse everything
     line = line[::-1]
     
     # make english stuff better again
     words_list = []
-    for word in re.split(r'[a-zA-Z]+', line):
+    for word in re.split(r'([a-zA-Z]+)', line):
     #for word in re.split(ur'[א-ת]+', line):
         if len(word) == 0:
             continue
@@ -116,10 +166,13 @@ def fix_hebrew(line):
     
     # fix punctuation from the outer edges (bring from the end to the start)
     puncs = r''',."'?!:'''
-    ending_puncs = re.findall(r'([%s]+)$' % re.escape(puncs), line)
-    line_a = line
+    ending_puncs = re.findall(r'([a-zA-Z%s]+)$' % re.escape(puncs), line)
     if len(ending_puncs) > 0:
-        line = ending_puncs[0] + line.rstrip(puncs)
+        line = ending_puncs[0] + line.rstrip(ending_puncs[0])
+    
+    if len(original_line) != len(line):
+        #import pdb;pdb.set_trace()
+        raise Exception("A bug in fixing hebrew")
     
     return line
 
