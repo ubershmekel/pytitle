@@ -5,9 +5,19 @@ and outputs the in and out times of each title.
 
 This can be useful if you made subtitles using adobe premiere and
 want to convert the subtitles to srt or sub files.
+
+usage examples:
+    python prproj2subs.py mymovie.prproj subsfname.srt
+    python prproj2subs.py mymovie.prproj subsfname.sbv
+    python prproj2subs.py mymovie.prproj subsfname.sub
+
+
+written for python 3
 '''
 
 from __future__ import division
+from __future__ import unicode_literals
+import sys
 import string
 import re
 import pprint
@@ -200,8 +210,11 @@ def get_intervals(prproj):
 
 
 if __name__ == "__main__":
-    prproj = open('JustSubs-cs5.prproj', 'r').read()
+    prproj_fname = sys.argv[1]
+    subs_fname = sys.argv[2]
+    
+    prproj = open(prproj_fname, 'r').read()
     intervals = get_intervals(prproj)
-    subformat = subtitles.SubRip()
+    subformat = subtitles.subs_from_fname(subs_fname)
     subs = subformat.render(intervals)
-    open('subtitle_intervals.srt', 'wb').write(subs.encode('utf-8'))
+    open(subs_fname, 'wb').write(subs.encode('utf-8'))

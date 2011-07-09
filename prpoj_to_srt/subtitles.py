@@ -11,6 +11,7 @@ usage:
     open('whatever' + subformat.extension, 'w').write(subs)
 '''
 
+import os
 import datetime
 
 def time_format(seconds, msec_sep='.'):
@@ -72,3 +73,12 @@ class Youtube(SubtitleFormat):
     def title(self, time_in, time_out, text):
         return '%s,%s\n%s\n\n' % (time_format(time_in), time_format(time_out), text)
 
+
+FORMATS = [Youtube, SubViewer, SubRip]
+EXTENSIONS = {fmt.extension: fmt for fmt in FORMATS}
+
+def subs_from_fname(fname):
+    extension = os.path.splitext(fname)[1]
+    # get rid of the dot
+    return EXTENSIONS[extension]()
+            
