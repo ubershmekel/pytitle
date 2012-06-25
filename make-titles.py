@@ -18,6 +18,7 @@ btw Version 2.0 will be able to take srt files and make an importable sequence!
 works on Python 2.7 and Python 3.2
 '''
 import re
+import os
 
 # this is useful for RTL languages like hebrew, turn this to False for english.
 REVERSE_TEXT = True
@@ -28,6 +29,7 @@ TEMPLATE = TEMPLATE.decode('utf-16')
 SUBS_TEXT = open("Subtitles.txt", "rb").read().decode('utf-8')[1:]
 FIRST_LINE_TO_REPLACE = 'FirstLine'
 SECOND_LINE_TO_REPLACE = 'SecondLine'
+OUTPUT_DIR = 'Subs'
 
 def MakePrtlFile(textlines, fname):
     # premiere does newlines in a very strange fashion... So i just remove theme
@@ -71,9 +73,13 @@ def ParseSubsFile():
 	subs = [x for x in SUBS_TEXT.split('#') if len(x) > 0]
 	
 	print(len(subs))
+	if not os.path.exists(OUTPUT_DIR):
+		os.mkdir(OUTPUT_DIR)
+	
 	for i, text in enumerate(subs):
 		num_id = "%04d" % i
-		fname = "Subs\\Title%s%s" % (num_id, ".prtl")
+		fname = "Title%s%s" % (num_id, ".prtl")
+		fname = os.path.join(OUTPUT_DIR, fname)
 		MakePrtlFile(text, fname)
 
 ParseSubsFile()
