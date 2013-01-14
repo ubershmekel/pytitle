@@ -7,7 +7,7 @@ Just import them to premiere, drop them in your sequence and fix the timing.
 subtitles.txt - should be subtitles text seperated by 2 newlines (\n\n)
 
 TitleExample.prtl - this title file you can redesign as you like, only
-					make sure it still contains the text TO_REPLACE ("FirstLineSecondLine")
+                    make sure it still contains the text TO_REPLACE ("FirstLineSecondLine")
 
 
 
@@ -34,6 +34,7 @@ OUTPUT_DIR = 'Subs'
 def MakePrtlFile(textlines, fname):
     # premiere does newlines in a very strange fashion... So i just remove theme
     lines = textlines.strip().split('\n')
+    lines = [l.strip() for l in lines]
     firstLine = lines[0]
     if len(lines) > 1:
         secondLine = lines[1]
@@ -70,17 +71,17 @@ def MakePrtlFile(textlines, fname):
     f.close()
     
 def ParseSubsFile():
-	subs = [x for x in SUBS_TEXT.split('#') if len(x) > 0]
-	
-	print(len(subs))
-	if not os.path.exists(OUTPUT_DIR):
-		os.mkdir(OUTPUT_DIR)
-	
-	for i, text in enumerate(subs):
-		num_id = "%04d" % i
-		fname = "Title%s%s" % (num_id, ".prtl")
-		fname = os.path.join(OUTPUT_DIR, fname)
-		MakePrtlFile(text, fname)
+    subs = [x for x in SUBS_TEXT.split('#') if len(x) > 0]
+    
+    print(len(subs))
+    if not os.path.exists(OUTPUT_DIR):
+        os.mkdir(OUTPUT_DIR)
+    
+    for i, text in enumerate(subs):
+        num_id = "%04d" % i
+        fname = "Title%s%s" % (num_id, ".prtl")
+        fname = os.path.join(OUTPUT_DIR, fname)
+        MakePrtlFile(text, fname)
 
 ParseSubsFile()
 
