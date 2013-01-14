@@ -4,7 +4,7 @@ MakeTitles
 Makes prtl files from your subtitles.txt file in Subs folder.
 Just import them to premiere, drop them in your sequence and fix the timing.
 
-subtitles.txt - should be subtitles text seperated by 2 newlines (\n\n)
+subtitles.txt - should be subtitles text seperated by a single pound character - "#"
 
 TitleExample.prtl - this title file you can redesign as you like, only
                     make sure it still contains the text TO_REPLACE ("FirstLineSecondLine")
